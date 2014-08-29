@@ -23,7 +23,7 @@ $config = [
         ],
         'mail' => [
             'class' => 'yii\swiftmailer\Mailer',
-            'useFileTransport' => true,
+            'useFileTransport' => true,//false для включения отправки почты
         ],
         'i18n' => [
             'translations' => [

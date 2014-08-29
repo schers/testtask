@@ -40,7 +40,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Роль',
                 'value' => $model->getRole()
             ],
-            'status',
+            'status' => [
+                'label' => 'Статус',
+                'value' => $model->getStatus()
+            ],
             'create_time',
             'update_time',
         ],

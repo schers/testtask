@@ -251,33 +251,17 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Выбор активного пользователя по [[username]]
-     * @param string $username
-     */
-    public static function findActiveByUsername($username)
-    {
-        return static::find()->where('username = :username', [':username' => $username])->active()->one();
-    }
-
-    /**
-     * Выборка неактивного пользователя по [[username]]
-     * @param string $username
-     */
-    public static function findInactiveByUsername($username)
-    {
-        return static::find()->where('username = :username', [':username' => $username])->inactive()->one();
-    }
-
-    /**
      * Выборка админа по [[username]]
      * @param string $username
+     *
+     * @return array|null|ActiveRecord
      */
     public static function findActiveAdminByUsername($username)
     {
         return static::find()->where([
                 'and', 'username = :username',
                 ['or', 'role_id = ' . self::ROLE_ADMIN,  'role_id = ' . self::ROLE_SUPERADMIN]
-            ], [':username' => $username])->active()->one();
+            ], [':username' => $username])->one();
     }
 
     /**
