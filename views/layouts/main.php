@@ -22,6 +22,7 @@ if (!Yii::$app->user->isGuest){
     if (Yii::$app->user->identity->role_id == User::ROLE_ADMIN || Yii::$app->user->identity->role_id == User::ROLE_SUPERADMIN){
         $links = array_merge($links, [
                 ['label' => 'Пользователи', 'url' => ['/user/index']],
+                ['label' => 'Бонусные карты', 'url' => ['/cards/index']],
             ]);
     }
     $links[] = ['label' => 'Выход (' . Yii::$app->user->identity->username . ')',

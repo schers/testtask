@@ -33,6 +33,16 @@ class CardsSearch extends Cards
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'attributes' => [
+                    'series',
+                    'card_num',
+                    'date_release',
+                    'date_end_activity',
+                    'sum',
+                    'status',
+                ],
+            ],
         ]);
 
         if (!($this->load($params) && $this->validate())) {
@@ -40,7 +50,6 @@ class CardsSearch extends Cards
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
             'series' => $this->series,
             'card_num' => $this->card_num,
             'date_release' => $this->date_release,

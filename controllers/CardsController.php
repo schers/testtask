@@ -2,12 +2,14 @@
 
 namespace app\controllers;
 
+use app\models\GenerateForm;
 use Yii;
 use app\models\Cards;
 use app\models\search\CardsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
 
 /**
  * CardsController implements the CRUD actions for Cards model.
@@ -32,12 +34,32 @@ class CardsController extends Controller
      */
     public function actionIndex()
     {
+        if (Yii::$app->request->isAjax){
+            $genModel = new GenerateForm();
+            if ($genModel->load(Yii::$app->request->post()) && $genModel->generateCards()){
+                return Json::encode([
+                        'success' => true,
+                        'error' => false,
+                        'message' => 'Генерация карт прошла успешно'
+                    ]);
+            } else {
+                return Json::encode([
+                        'success' => false,
+                        'error' => true,
+                        'message' => 'Ошибка генерации карт.'
+                    ]);
+            }
+        }
+
         $searchModel = new CardsSearch;
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
+
+        $generateFormModel = new GenerateForm();
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
+            'generateFormModel' => $generateFormModel,
         ]);
     }
 
