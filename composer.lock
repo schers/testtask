@@ -1,10 +1,9 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
-        "This file is @generated automatically"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c51e0246ea28c54dfa952a8a2a024695",
+    "hash": "3df24282d74c88584fbfcc9037b03d9d",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -722,7 +721,6 @@
         "yiisoft/yii2-jui": 10,
         "zhuravljov/yii2-datetime-widgets": 20
     },
-    "prefer-stable": false,
     "platform": {
         "php": ">=5.4.0"
     },

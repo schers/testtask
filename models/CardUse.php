@@ -18,6 +18,13 @@ use Yii;
 class CardUse extends \yii\db\ActiveRecord
 {
     /**
+     * Старая стоимость
+     *
+     * @var number
+     */
+    protected $_oldCost;
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -38,7 +45,7 @@ class CardUse extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['date_use', 'card_id'], 'required'],
+            [['date_use', 'card_id', 'cost'], 'required'],
             [['date_use'], 'safe'],
             [['description'], 'string'],
             [['cost'], 'number'],
@@ -58,5 +65,37 @@ class CardUse extends \yii\db\ActiveRecord
             'cost' => 'Сумма',
             'card_id' => 'Карта',
         ];
+    }
+
+    /**
+     * Сохраним старую сумму, она еще пригодится
+     */
+    public function afterFind(){
+        $this->_oldCost = $this->cost;
+        parent::afterFind();
+    }
+
+    /**
+     * @param bool $insert
+     *
+     * @return bool
+     */
+    public function beforeSave($insert){
+        if (parent::beforeSave($insert)){
+            if ($insert){
+                $balance = $this->card->sum - $this->cost;
+            } else {
+                $balance = $this->card->sum + $this->_oldCost - $this->cost;
+            }
+            if ($balance < 0){
+                return false;
+            } else {
+                $this->card->sum = $balance;
+                if($this->card->save()){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

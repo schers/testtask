@@ -69,7 +69,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'id',
                     'date_use',
                     'description:ntext',
-                    'cost',
+                    'cost' => [
+                        'attribute' => 'cost',
+                        'label' => 'Сумма (руб.)',
+                    ],
 
                     ['class' => 'yii\grid\ActionColumn', 'controller' => 'card-use'],
                 ],
