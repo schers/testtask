@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use zhuravljov\widgets\DateTimePicker;
 
 /**
  * @var yii\web\View $this
@@ -20,9 +21,25 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'status')->dropDownList($model->getStatusArray(), ['style' => 'width: 200px;']) ?>
 
-    <?= $form->field($model, 'date_release')->textInput(['style' => 'width: 200px;']) ?>
+    <?= $form->field($model, 'date_release')->widget(DateTimePicker::className(), [
+            'options' => ['class' => 'form-control', 'style' => 'width: 200px;'],
+            'clientOptions' => [
+                'format' => 'yyyy-mm-dd hh:ii',
+                'language' => 'ru',
+                'autoclose' => true,
+            ],
+            'clientEvents' => [],
+        ]) ?>
 
-    <?= $form->field($model, 'date_end_activity')->textInput(['style' => 'width: 200px;']) ?>
+    <?= $form->field($model, 'date_end_activity')->widget(DateTimePicker::className(), [
+            'options' => ['class' => 'form-control', 'style' => 'width: 200px;'],
+            'clientOptions' => [
+                'format' => 'yyyy-mm-dd hh:ii',
+                'language' => 'ru',
+                'autoclose' => true,
+            ],
+            'clientEvents' => [],
+        ]) ?>
 
     <?= $form->field($model, 'sum')->textInput(['style' => 'width: 100px;']) ?>
 

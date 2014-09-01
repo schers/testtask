@@ -28,17 +28,28 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
             'username',
             'email:email',
             'name',
             'surname',
             // 'password',
             // 'auth_key',
-            // 'role_id',
-            // 'status_id',
-            // 'create_time',
-            // 'update_time',
+            'role' => [
+                'attribute' => 'role_id',
+                'value' => function(app\models\User $model){
+                        return $model->getRole();
+                    },
+                'filter' => app\models\User::getRoleArray(),
+            ],
+            'status' => [
+                'attribute' => 'status_id',
+                'value' => function(app\models\User $model){
+                        return $model->getStatus();
+                    },
+                'filter' => app\models\User::getStatusArray(),
+            ],
+            'create_time',
+            //'update_time',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

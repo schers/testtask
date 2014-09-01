@@ -2,13 +2,17 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\grid\GridView;
 
 /**
  * @var yii\web\View $this
  * @var app\models\Cards $model
+ *
+ * @var yii\data\ActiveDataProvider $dataProvider
+ * @var app\models\search\CardUseSearch $searchModel
  */
 
-$this->title = 'Карта №'.$model->series.' '.$model->card_num;
+$this->title = 'Карта. серия:'.$model->series.' №'.$model->card_num;
 $this->params['breadcrumbs'][] = ['label' => 'Бонусные карты', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -45,5 +49,32 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]) ?>
+
+    <h2><?= Html::encode('Операции по карте') ?></h2>
+
+    <div class="card-use-index">
+
+        <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+        <p>
+            <?= Html::a('Добавить запись', ['card-use/create', 'cid' => $model->id], ['class' => 'btn btn-success']) ?>
+        </p>
+
+        <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+
+                    'id',
+                    'date_use',
+                    'description:ntext',
+                    'cost',
+
+                    ['class' => 'yii\grid\ActionColumn', 'controller' => 'card-use'],
+                ],
+            ]); ?>
+
+    </div>
 
 </div>

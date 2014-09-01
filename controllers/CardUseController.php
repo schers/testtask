@@ -2,20 +2,18 @@
 
 namespace app\controllers;
 
-use app\models\GenerateForm;
-use Yii;
 use app\models\Cards;
-use app\models\search\CardsSearch;
+use Yii;
+use app\models\CardUse;
+use app\models\search\CardUseSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\helpers\Json;
-use app\models\search\CardUseSearch;
 
 /**
- * CardsController implements the CRUD actions for Cards model.
+ * CardUseController implements the CRUD actions for CardUse model.
  */
-class CardsController extends Controller
+class CardUseController extends Controller
 {
     public function behaviors()
     {
@@ -30,72 +28,50 @@ class CardsController extends Controller
     }
 
     /**
-     * Lists all Cards models.
+     * Lists all CardUse models.
      * @return mixed
      */
     public function actionIndex()
     {
-        if (Yii::$app->request->isAjax){
-            $genModel = new GenerateForm();
-            if ($genModel->load(Yii::$app->request->post()) && $genModel->generateCards()){
-                return Json::encode([
-                        'success' => true,
-                        'error' => false,
-                        'message' => 'Генерация карт прошла успешно'
-                    ]);
-            } else {
-                return Json::encode([
-                        'success' => false,
-                        'error' => true,
-                        'message' => 'Ошибка генерации карт.'
-                    ]);
-            }
-        }
-
-        $searchModel = new CardsSearch;
+        $searchModel = new CardUseSearch;
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
-
-        $generateFormModel = new GenerateForm();
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
-            'generateFormModel' => $generateFormModel,
         ]);
     }
 
     /**
-     * Displays a single Cards model.
+     * Displays a single CardUse model.
      * @param string $id
      * @return mixed
      */
     public function actionView($id)
     {
-        $searchModel = new CardUseSearch;
-        $params = Yii::$app->request->getQueryParams();
-        $params['CardUseSearch']['card_id'] = $id;
-
-        $dataProvider = $searchModel->search($params);
-
         return $this->render('view', [
-                'dataProvider' => $dataProvider,
-                'searchModel' => $searchModel,
-                'model' => $this->findModel($id),
-            ]);
+            'model' => $this->findModel($id),
+        ]);
     }
 
     /**
-     * Creates a new Cards model.
+     * Creates a new CardUse model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
+     *
+     * @param $cid
+     *
+     * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate($cid)
     {
-        $model = new Cards;
+        $model = new CardUse;
+
+        $model->card_id = $cid;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['/cards/view', 'id' => $model->card->id]);
         } else {
+            $model->date_use = date('Y-m-d H:i');
             return $this->render('create', [
                 'model' => $model,
             ]);
@@ -103,7 +79,7 @@ class CardsController extends Controller
     }
 
     /**
-     * Updates an existing Cards model.
+     * Updates an existing CardUse model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
      * @return mixed
@@ -113,7 +89,7 @@ class CardsController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['/cards/view', 'id' => $model->card->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -122,7 +98,7 @@ class CardsController extends Controller
     }
 
     /**
-     * Deletes an existing Cards model.
+     * Deletes an existing CardUse model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param string $id
      * @return mixed
@@ -135,15 +111,15 @@ class CardsController extends Controller
     }
 
     /**
-     * Finds the Cards model based on its primary key value.
+     * Finds the CardUse model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id
-     * @return Cards the loaded model
+     * @return CardUse the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Cards::findOne($id)) !== null) {
+        if (($model = CardUse::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

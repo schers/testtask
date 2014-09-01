@@ -12,6 +12,8 @@ use Yii;
  * @property string $description
  * @property double $cost
  * @property string $card_id
+ *
+ * @property Cards  $card
  */
 class CardUse extends \yii\db\ActiveRecord
 {
@@ -21,6 +23,13 @@ class CardUse extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'card_use';
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCard(){
+        return $this->hasOne(Cards::className(), ['id' => 'card_id']);
     }
 
     /**
@@ -44,10 +53,10 @@ class CardUse extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'date_use' => 'Date Use',
-            'description' => 'Description',
-            'cost' => 'Cost',
-            'card_id' => 'Card ID',
+            'date_use' => 'Дата использования',
+            'description' => 'Описание операции',
+            'cost' => 'Сумма',
+            'card_id' => 'Карта',
         ];
     }
 }

@@ -6,17 +6,21 @@ use Yii;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
+use app\models\CardUse;
 
 /**
  * This is the model class for table "cards".
  *
- * @property string $id
- * @property string $series
- * @property string $card_num
- * @property string $date_release
- * @property string $date_end_activity
- * @property double $sum
- * @property integer $status
+ * @property string    $id
+ * @property string    $series
+ * @property string    $card_num
+ * @property string    $date_release
+ * @property string    $date_end_activity
+ * @property double    $sum
+ * @property integer   $status
+ *
+ * @property CardUse[] $carduses
+ * @property string    $serialnum
  */
 class Cards extends ActiveRecord
 {
@@ -29,6 +33,15 @@ class Cards extends ActiveRecord
      * @var string Читабельный статус.
      */
     protected $_status;
+
+    public function getCarduses(){
+
+        return $this->hasMany(CardUse::className(), ['card_id' => 'id']);
+    }
+
+    public function getSerialnum(){
+        return 'серия: '.$this->series.', №'.$this->card_num;
+    }
 
     /**
      * @return string Читабельный статус.
@@ -104,6 +117,7 @@ class Cards extends ActiveRecord
             'date_end_activity' => 'Дата окончания активности',
             'sum' => 'Сумма',
             'status' => 'Статус',
+            'serialnum' => 'Карта'
         ];
     }
 }
