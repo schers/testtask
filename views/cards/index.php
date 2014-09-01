@@ -25,7 +25,7 @@ $this->registerJsFile('/js/jquery.form.min.js', [\yii\web\JqueryAsset::className
 
     <p>
         <?= Html::a('Добавить карту', ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Генерировать карты', ['/#'], ['id' => 'open_generate']) ?>
+        <?= Html::a('Генерировать карты', ['/#'], ['id' => 'open_generate', 'class' => 'btn btn-warning']) ?>
     </p>
 
     <div id="generate_form_container" style="display: none;">

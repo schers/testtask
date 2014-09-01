@@ -34,13 +34,37 @@ class Cards extends ActiveRecord
      */
     protected $_status;
 
+    protected $_serialnum;
+
+    protected static $currentTime;
+
+    protected static function getCurrentTime(){
+        if (self::$currentTime == null){
+            self::$currentTime = time();
+        }
+        return self::$currentTime;
+    }
+
+    /**
+     * Записи по использованию карты
+     *
+     * @return \yii\db\ActiveQuery
+     */
     public function getCarduses(){
 
         return $this->hasMany(CardUse::className(), ['card_id' => 'id']);
     }
 
+    /**
+     * Серия и номер карты
+     *
+     * @return string
+     */
     public function getSerialnum(){
-        return 'серия: '.$this->series.', №'.$this->card_num;
+        if ($this->_serialnum == null){
+            $this->_serialnum = 'серия: '.$this->series.', №'.$this->card_num;
+        }
+        return $this->_serialnum;
     }
 
     /**
@@ -119,5 +143,19 @@ class Cards extends ActiveRecord
             'status' => 'Статус',
             'serialnum' => 'Карта'
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterFind(){
+        if (strtotime($this->date_end_activity) < self::getCurrentTime()){
+            $this->status = self::STATUS_EXPIRED;
+            $this->save();
+        } else if ($this->status == self::STATUS_EXPIRED) {
+            $this->status = self::STATUS_INACTIVE;
+            $this->save();
+        }
+        parent::afterFind();
     }
 }

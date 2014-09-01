@@ -14,8 +14,8 @@ AppAsset::register($this);
 
 $links = [
     ['label' => 'Главная', 'url' => ['/site/index']],
-    ['label' => 'О проекте', 'url' => ['/site/about']],
-    ['label' => 'Контакты', 'url' => ['/site/contact']],
+    //['label' => 'О проекте', 'url' => ['/site/about']],
+    //['label' => 'Контакты', 'url' => ['/site/contact']],
 ];
 
 if (!Yii::$app->user->isGuest){
