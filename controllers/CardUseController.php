@@ -2,10 +2,11 @@
 
 namespace app\controllers;
 
-use app\models\Cards;
+use app\models\User;
 use Yii;
 use app\models\CardUse;
 use app\models\search\CardUseSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,6 +23,15 @@ class CardUseController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => [User::ROLE_SUPERADMIN, User::ROLE_ADMIN],
+                    ],
                 ],
             ],
         ];

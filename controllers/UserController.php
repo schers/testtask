@@ -26,11 +26,10 @@ class UserController extends Controller
             ],
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'view', 'create', 'update'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => [User::ROLE_SUPERADMIN, User::ROLE_ADMIN],
                     ],
                 ],
             ],

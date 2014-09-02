@@ -3,14 +3,15 @@
 namespace app\controllers;
 
 use app\models\GenerateForm;
+use app\models\User;
 use Yii;
 use app\models\Cards;
 use app\models\search\CardsSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Json;
-use app\models\search\CardUseSearch;
 
 /**
  * CardsController implements the CRUD actions for Cards model.
@@ -24,6 +25,15 @@ class CardsController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => [User::ROLE_SUPERADMIN, User::ROLE_ADMIN],
+                    ],
                 ],
             ],
         ];

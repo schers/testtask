@@ -19,7 +19,7 @@ $links = [
 ];
 
 if (!Yii::$app->user->isGuest){
-    if (Yii::$app->user->identity->role_id == User::ROLE_ADMIN || Yii::$app->user->identity->role_id == User::ROLE_SUPERADMIN){
+    if (Yii::$app->user->can(User::ROLE_ADMIN) || Yii::$app->user->can(User::ROLE_SUPERADMIN)){
         $links = array_merge($links, [
                 ['label' => 'Пользователи', 'url' => ['/user/index']],
                 ['label' => 'Бонусные карты', 'url' => ['/cards/index']],

@@ -20,7 +20,6 @@ $config = [
         ],
         'authManager' => [
             'class' => 'yii\rbac\PhpManager',
-            'defaultRoles' => ['superadmin', 'admin', 'user'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

@@ -47,10 +47,9 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Роли пользователей.
      */
-    const ROLE_USER = 0;
-    const ROLE_ADMIN = 1;
-    const ROLE_SUPERADMIN = 2;
-    const ROLE_MODERATOR = 3;
+    const ROLE_USER = 'user';
+    const ROLE_ADMIN = 'admin';
+    const ROLE_SUPERADMIN = 'superadmin';
 
     /**
      * События модели.
@@ -324,7 +323,6 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             self::ROLE_USER => Yii::t('app', 'Normal user'),
-            self::ROLE_MODERATOR => Yii::t('app', 'Moderator'),
             self::ROLE_ADMIN => Yii::t('app', 'Admin'),
             self::ROLE_SUPERADMIN => Yii::t('app', 'Super-admin')
         ];
@@ -407,24 +405,28 @@ class User extends ActiveRecord implements IdentityInterface
                 if (!$this->status_id) {
                     $this->status_id = self::STATUS_ACTIVE;
                 }
+                //Задаем роль
+                if (!$this->role_id){
+                    $this->role_id = self::ROLE_USER;
+                }
                 // Генерируем уникальный ключ
                 $this->auth_key = Security::generateRandomKey();
             } else {
-                // Активируем пользователя если был отправлен запрос активации
-                if ($this->scenario === 'activation') {
-                    $this->status_id = self::STATUS_ACTIVE;
-                    $this->auth_key = Security::generateRandomKey();
-                }
-                // Обновляем пароль и ключ если был отправлен запрос восстановления пароля
-                if ($this->scenario === 'recovery') {
-                    $this->password = Security::generateRandomKey(8);
-                    $this->auth_key = Security::generateRandomKey();
-                    $this->password_hash = Security::generatePasswordHash($this->password);
-                }
-                // Обновляем пароль если был отправлен запрос для его смены
-                if ($this->scenario === 'password') {
-                    $this->password_hash = Security::generatePasswordHash($this->password);
-                }
+//                // Активируем пользователя если был отправлен запрос активации
+//                if ($this->scenario === 'activation') {
+//                    $this->status_id = self::STATUS_ACTIVE;
+//                    $this->auth_key = Security::generateRandomKey();
+//                }
+//                // Обновляем пароль и ключ если был отправлен запрос восстановления пароля
+//                if ($this->scenario === 'recovery') {
+//                    $this->password = Security::generateRandomKey(8);
+//                    $this->auth_key = Security::generateRandomKey();
+//                    $this->password_hash = Security::generatePasswordHash($this->password);
+//                }
+//                // Обновляем пароль если был отправлен запрос для его смены
+//                if ($this->scenario === 'password') {
+//                    $this->password_hash = Security::generatePasswordHash($this->password);
+//                }
                 // При редактировании пароля пользователя в админке, генерируем password_hash
                 if ($this->scenario === 'admin-update' && !empty($this->password)) {
                     $this->password_hash = Security::generatePasswordHash($this->password);
@@ -444,6 +446,27 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function afterSave($insert)
     {
+        //Подключаем RBAC сценарий
+        $auth = Yii::$app->authManager;
+
+        if (!$insert){
+            $auth->revokeAll($this->getId());
+        }
+
+        switch($this->role_id){
+            case self::ROLE_SUPERADMIN :
+                $role = $auth->getRole(self::ROLE_SUPERADMIN);
+                break;
+            case self::ROLE_ADMIN :
+                $role = $auth->getRole(self::ROLE_ADMIN);
+                break;
+            case self::ROLE_USER :
+            default:
+                $role = $auth->getRole(self::ROLE_USER);
+        }
+
+        $auth->assign($role, $this->getId());
+
         // Удаляем все записи пользователя.
         if ($this->scenario === 'delete') {
 
