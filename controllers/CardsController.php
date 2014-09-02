@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\GenerateForm;
+use app\models\search\CardUseSearch;
 use app\models\User;
 use Yii;
 use app\models\Cards;
@@ -81,7 +82,7 @@ class CardsController extends Controller
      */
     public function actionView($id)
     {
-        $searchModel = new CardUseSearch;
+        $searchModel = new CardUseSearch();
         $params = Yii::$app->request->getQueryParams();
         $params['CardUseSearch']['card_id'] = $id;
 
@@ -103,13 +104,18 @@ class CardsController extends Controller
     {
         $model = new Cards;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
+        if ($model->load(Yii::$app->request->post())) {
+
+            $model->creator_id = Yii::$app->user->getId();
+
+            if($model->save()){
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+        }
+
+        return $this->render('create', [
                 'model' => $model,
             ]);
-        }
     }
 
     /**

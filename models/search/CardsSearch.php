@@ -56,6 +56,7 @@ class CardsSearch extends Cards
             'date_end_activity' => $this->date_end_activity,
             'sum' => $this->sum,
             'status' => $this->status,
+            'creator.username' => $this->creator->username,
         ]);
 
         return $dataProvider;

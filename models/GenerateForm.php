@@ -41,6 +41,7 @@ class GenerateForm extends Model
 
             for ($i = 0; $i < $this->quantity; $i++){
                 $card = new Cards();
+                $card->creator_id = Yii::$app->user->getId();
                 $card->card_num = $i + $numOffset;
                 $card->series = $this->series;
                 $card->status = Cards::STATUS_ACTIVE;

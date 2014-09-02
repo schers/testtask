@@ -18,8 +18,10 @@ use app\models\CardUse;
  * @property string    $date_end_activity
  * @property double    $sum
  * @property integer   $status
+ * @property integer   $creator_id
  *
  * @property CardUse[] $carduses
+ * @property User      $creator
  * @property string    $serialnum
  */
 class Cards extends ActiveRecord
@@ -38,6 +40,9 @@ class Cards extends ActiveRecord
 
     protected static $currentTime;
 
+    /**
+     * @return int
+     */
     protected static function getCurrentTime(){
         if (self::$currentTime == null){
             self::$currentTime = time();
@@ -53,6 +58,10 @@ class Cards extends ActiveRecord
     public function getCarduses(){
 
         return $this->hasMany(CardUse::className(), ['card_id' => 'id']);
+    }
+
+    public function getCreator(){
+        return $this->hasOne(User::className(), ['id' => 'creator_id']);
     }
 
     /**
@@ -121,8 +130,8 @@ class Cards extends ActiveRecord
     public function rules()
     {
         return [
-            [['series', 'card_num', 'status'], 'integer'],
-            [['sum'], 'required'],
+            [['series', 'card_num', 'status', 'creator_id'], 'integer'],
+            [['sum','series', 'card_num', 'status'], 'required'],
             [['date_release', 'date_end_activity'], 'safe'],
             [['sum'], 'number']
         ];
@@ -141,7 +150,8 @@ class Cards extends ActiveRecord
             'date_end_activity' => 'Дата окончания активности',
             'sum' => 'Сумма',
             'status' => 'Статус',
-            'serialnum' => 'Карта'
+            'serialnum' => 'Карта',
+            'creator_id' => 'Добавил'
         ];
     }
 
@@ -157,5 +167,23 @@ class Cards extends ActiveRecord
             $this->save();
         }
         parent::afterFind();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeDelete(){
+        if (parent::beforeDelete()){
+            if($items = CardUse::find()->where(['card_id' => $this->id])->all()){
+                $success = true;
+                foreach($items as $item){
+                    if (!$item->delete()){
+                        $success = false;
+                    }
+                }
+                return $success;
+            }
+        }
+        return false;
     }
 }

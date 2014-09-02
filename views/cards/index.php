@@ -48,7 +48,6 @@ $this->registerJsFile('/js/jquery.form.min.js', [\yii\web\JqueryAsset::className
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
             'series',
             'card_num',
             'date_release',
@@ -63,6 +62,10 @@ $this->registerJsFile('/js/jquery.form.min.js', [\yii\web\JqueryAsset::className
                         return $model->getStatus();
                     },
                 'filter' => app\models\Cards::getStatusArray(),
+            ],
+            'creator' => [
+                'label' => 'Добавил',
+                'attribute' => 'creator.username',
             ],
 
             ['class' => 'yii\grid\ActionColumn'],
