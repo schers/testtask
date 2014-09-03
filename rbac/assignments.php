@@ -1,10 +1,9 @@
 <?php
 return [
     1 => [
-        'user',
-        'admin',
+        'superadmin',
     ],
     2 => [
-        'user',
+        'admin',
     ],
 ];

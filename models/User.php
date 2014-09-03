@@ -348,7 +348,8 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             self::STATUS_ACTIVE => Yii::t('app', 'Active'),
             self::STATUS_INACTIVE => Yii::t('app', 'Inactive'),
-            self::STATUS_BANNED => Yii::t('app', 'Banned')
+            self::STATUS_BANNED => Yii::t('app', 'Banned'),
+            self::STATUS_DELETED => Yii::t('app', 'Deleted')
         ];
     }
 
@@ -453,24 +454,23 @@ class User extends ActiveRecord implements IdentityInterface
             $auth->revokeAll($this->getId());
         }
 
-        switch($this->role_id){
-            case self::ROLE_SUPERADMIN :
-                $role = $auth->getRole(self::ROLE_SUPERADMIN);
-                break;
-            case self::ROLE_ADMIN :
-                $role = $auth->getRole(self::ROLE_ADMIN);
-                break;
-            case self::ROLE_USER :
-            default:
-                $role = $auth->getRole(self::ROLE_USER);
+        //Если пользователь не удален
+        if ($this->status_id != self::STATUS_DELETED){
+            switch($this->role_id){
+                case self::ROLE_SUPERADMIN :
+                    $role = $auth->getRole(self::ROLE_SUPERADMIN);
+                    break;
+                case self::ROLE_ADMIN :
+                    $role = $auth->getRole(self::ROLE_ADMIN);
+                    break;
+                case self::ROLE_USER :
+                default:
+                    $role = $auth->getRole(self::ROLE_USER);
+            }
+
+            $auth->assign($role, $this->getId());
         }
 
-        $auth->assign($role, $this->getId());
-
-        // Удаляем все записи пользователя.
-        if ($this->scenario === 'delete') {
-
-        }
         parent::afterSave($insert);
     }
 }

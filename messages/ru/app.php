@@ -8,6 +8,7 @@ return [
     'Active' => 'Активен',
     'Inactive' => 'Не активен',
     'Banned' => 'Забанен',
+    'Deleted' => 'Удалён',
     'Card_active' => 'Активна',
     'Card_inactive' => 'Не активна',
     'Card_expired' => 'Просрочена',

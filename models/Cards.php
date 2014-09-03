@@ -53,13 +53,16 @@ class Cards extends ActiveRecord
     /**
      * Записи по использованию карты
      *
-     * @return \yii\db\ActiveQuery
+     * @return \app\models\CardUse[]
      */
     public function getCarduses(){
 
         return $this->hasMany(CardUse::className(), ['card_id' => 'id']);
     }
 
+    /**
+     * @return \app\models\User
+     */
     public function getCreator(){
         return $this->hasOne(User::className(), ['id' => 'creator_id']);
     }
@@ -151,7 +154,8 @@ class Cards extends ActiveRecord
             'sum' => 'Сумма',
             'status' => 'Статус',
             'serialnum' => 'Карта',
-            'creator_id' => 'Добавил'
+            'creator_id' => 'ID Создателя',
+            'creator.username' => 'Добавил',
         ];
     }
 

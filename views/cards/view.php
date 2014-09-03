@@ -47,6 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Статус',
                 'value' => $model->getStatus(),
             ],
+            'creator.username'
         ],
     ]) ?>
 

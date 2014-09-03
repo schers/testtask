@@ -7,7 +7,7 @@ use yii\helpers\Html;
  * @var app\models\User $model
  */
 
-$this->title = 'Update User: ' . $model->name;
+$this->title = 'Редактировать данные: ' . $model->fio;
 $this->params['breadcrumbs'][] = ['label' => 'Пользователи', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Изменить';

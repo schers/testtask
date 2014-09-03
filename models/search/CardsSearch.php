@@ -16,9 +16,14 @@ class CardsSearch extends Cards
     {
         return [
             [['id', 'series', 'card_num', 'status'], 'integer'],
-            [['date_release', 'date_end_activity'], 'safe'],
+            [['date_release', 'date_end_activity', 'creator.username'], 'safe'],
             [['sum'], 'number'],
         ];
+    }
+
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['creator.username']);
     }
 
     public function scenarios()
@@ -30,6 +35,8 @@ class CardsSearch extends Cards
     public function search($params)
     {
         $query = Cards::find();
+
+        $query->joinWith(['creator' => function($query) { $query->from(['creator' => 'user']); }]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -45,6 +52,11 @@ class CardsSearch extends Cards
             ],
         ]);
 
+        $dataProvider->sort->attributes['creator.username'] = [
+            'asc' => ['creator.username' => SORT_ASC],
+            'desc' => ['creator.username' => SORT_DESC],
+        ];
+
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
@@ -52,12 +64,14 @@ class CardsSearch extends Cards
         $query->andFilterWhere([
             'series' => $this->series,
             'card_num' => $this->card_num,
-            'date_release' => $this->date_release,
-            'date_end_activity' => $this->date_end_activity,
             'sum' => $this->sum,
             'status' => $this->status,
-            'creator.username' => $this->creator->username,
         ]);
+        $query->andFilterWhere(['LIKE', 'creator.username', $this->getAttribute('creator.username')])
+            ->andFilterWhere(['LIKE', 'date_release', $this->date_release])
+            ->andFilterWhere(['LIKE', 'date_end_activity', $this->date_end_activity]);
+
+        //var_dump($query); exit;
 
         return $dataProvider;
     }
