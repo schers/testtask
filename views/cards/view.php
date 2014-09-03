@@ -47,7 +47,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Статус',
                 'value' => $model->getStatus(),
             ],
-            'creator.username'
+            'creator.username',
+            'last_date_use' => [
+                'label' => 'Дата последнего использования',
+                'value' => $model->getLastDateUse(),
+            ],
         ],
     ]) ?>
 

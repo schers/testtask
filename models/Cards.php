@@ -56,8 +56,18 @@ class Cards extends ActiveRecord
      * @return \app\models\CardUse[]
      */
     public function getCarduses(){
-
         return $this->hasMany(CardUse::className(), ['card_id' => 'id']);
+    }
+
+    /**
+     * Дата последнего использования
+     *
+     * @return string
+     */
+    public function getLastDateUse(){
+        /** @var CardUse $lastUseItem */
+        $lastUseItem = CardUse::find()->where(['card_id' =>$this->id])->orderBy(['date_use' => SORT_DESC])->one();
+        return $lastUseItem->date_use;
     }
 
     /**
